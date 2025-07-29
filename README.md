@@ -123,3 +123,47 @@ if base64_pdf:
 [6]: https://docs.python.org/3/library/io.html?utm_source=chatgpt.com "io — Core tools for working with streams ... - Python documentation"
 [7]: https://docs.mistral.ai/capabilities/OCR/basic_ocr/?utm_source=chatgpt.com "Basic OCR - Mistral AI"
 [8]: https://www.cohorte.co/blog/a-step-by-step-guide-to-using-mistral-ocr?utm_source=chatgpt.com "A Step-by-Step Guide to Using Mistral OCR - Cohorte Projects"
+
+
+## نسخة أبسط من الكود:
+```python
+
+import base64
+from mistralai import Mistral
+
+def encode_pdf(pdf_path):
+    """Encode the PDF at pdf_path into a Base64 string."""
+    with open(pdf_path, "rb") as f:
+        return base64.b64encode(f.read()).decode()
+
+# مسار ملف PDF
+pdf_path = "document-1-5.pdf"
+base64_pdf = encode_pdf(pdf_path)
+
+# مفتاح API وإنشاء عميل Mistral
+api_key = "SB6B01uJMUWzpwu7MsqStV3UZaoj0zOB"
+client = Mistral(api_key=api_key)
+
+# إرسال المستند إلى خدمة OCR
+ocr_response = client.ocr.process(
+    model="mistral-ocr-latest",
+    document={
+        "type": "document_url",
+        "document_url": f"data:application/pdf;base64,{base64_pdf}"
+    },
+    include_image_base64=False
+)
+
+# كتابة النتائج في ملف Markdown
+with open("output.md", "w", encoding="utf-8") as md_file:
+    for page in ocr_response.pages:
+        md_file.write(f"## Page {page.index + 1}\n\n")
+        md_file.write(page.markdown + "\n\n")
+
+print("تم حفظ النص في output.md")
+```
+
+**ملاحظات بسيطة:**
+- لا يوجد هنا معالجة للأخطاء أو تحقق من القيم، لذا تأكد من وجود الملف والمفتاح الصحيح قبل التشغيل.
+- يمكنك تعديل `"document-1-5.pdf"` واسم الملف الناتج `"output.md"` حسب الحاجة.
+::contentReference[oaicite:0]{index=0}
