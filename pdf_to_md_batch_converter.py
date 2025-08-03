@@ -8,13 +8,16 @@ from mistralai import Mistral
 from dotenv import load_dotenv
 load_dotenv() 
 
-
 # Configuration
 DOC_DIR = "doc"
+OUTPUT_DIR = "output"                     # ← مجلد الإخراج
 DB_CSV = "processed_files.csv"
 LOG_FILE = "conversion.log"
 MAX_RETRIES = 5
 INITIAL_BACKOFF = 1  # in seconds
+
+# تأكد من وجود مجلد الإخراج
+os.makedirs(OUTPUT_DIR, exist_ok=True)
 
 # Initialize logging
 logging.basicConfig(
@@ -90,9 +93,10 @@ def convert_pdf_to_markdown(pdf_filename):
         include_image_base64=False
     )
 
-    # Write markdown
+    # Write markdown into مجلد الإخراج
     output_name = pdf_filename.rsplit('.', 1)[0] + '.md'
-    with open(output_name, 'w', encoding='utf-8') as md_file:
+    output_path = os.path.join(OUTPUT_DIR, output_name)
+    with open(output_path, 'w', encoding='utf-8') as md_file:
         for page in response.pages:
             md_file.write(f"## Page {page.index + 1}\n\n")
             md_file.write(page.markdown + "\n\n")
