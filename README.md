@@ -124,5 +124,4 @@ python pdf_to_md_batch_converter.py
 
 هذا المشروع مرخص بموجب رخصة MIT.
 
-```
 
